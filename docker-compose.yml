@@ -1,0 +1,119 @@
+version: '3.8'
+
+services:
+  # ============================================
+  # REDIS - Cache et base de données en mémoire
+  # ============================================
+  redis:
+    image: redis:7-alpine  # Image Redis légère basée sur Alpine Linux
+    container_name: redis-cache
+    restart: unless-stopped  # Redémarre automatiquement sauf arrêt manuel
+    ports:
+      - "6379:6379"  # Port par défaut de Redis
+    volumes:
+      - redis-data:/data  # Persiste les données Redis sur le disque
+    # Active la persistance AOF (Append Only File) et définit le mot de passe
+    command: redis-server --appendonly yes --requirepass yourStrongPasswordHere
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]  # Vérifie que Redis répond
+      interval: 30s  # Vérifie toutes les 30 secondes
+      timeout: 10s   # Timeout après 10 secondes
+      retries: 3     # 3 tentatives avant de marquer comme unhealthy
+    networks:
+      - redis-network
+
+  # ============================================
+  # REDISINSIGHT - Interface web pour Redis
+  # ============================================
+  redisinsight:
+    image: redis/redisinsight:latest  # Interface graphique officielle de Redis
+    container_name: redisinsight
+    restart: unless-stopped
+    ports:
+      - "5540:5540"  # Interface web accessible sur http://localhost:5540
+    volumes:
+      - redisinsight-data:/data  # Persiste les configurations de RedisInsight
+    depends_on:
+      - redis  # S'assure que Redis démarre avant RedisInsight
+    networks:
+      - redis-network
+
+  # ============================================
+  # ZOOKEEPER - Coordination pour Kafka
+  # ============================================
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0  # Image Confluent de Zookeeper
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"  # Port client de Zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181  # Port d'écoute pour les clients
+      ZOOKEEPER_TICK_TIME: 2000    # Unité de temps de base en millisecondes
+    networks:
+      - kafka-network
+
+  # ============================================
+  # KAFKA - Plateforme de streaming distribué
+  # ============================================
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0  # Image Confluent de Kafka
+    hostname: kafka
+    container_name: kafka
+    depends_on:
+      - zookeeper  # Kafka nécessite Zookeeper pour fonctionner
+    ports:
+      - "9092:9092"  # Port pour connexions externes (depuis l'hôte)
+      - "9101:9101"  # Port JMX pour le monitoring
+    environment:
+      KAFKA_BROKER_ID: 1  # Identifiant unique du broker Kafka
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'  # Connexion à Zookeeper
+      # Mapping des protocoles de sécurité pour les listeners
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      # Listeners : interne (kafka:29092) et externe (localhost:9092)
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1  # Facteur de réplication (1 = pas de réplication)
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1     # Minimum de réplicas in-sync
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1  # Réplication des logs transactionnels
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0  # Pas de délai pour le rééquilibrage initial
+      KAFKA_JMX_PORT: 9101           # Port pour Java Management Extensions
+      KAFKA_JMX_HOSTNAME: localhost  # Hostname pour JMX
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'  # Création automatique des topics
+    networks:
+      - kafka-network
+
+  # ============================================
+  # KAFKA-UI - Interface web pour Kafka
+  # ============================================
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest  # Interface graphique pour gérer Kafka
+    container_name: kafka-ui
+    depends_on:
+      - kafka
+      - zookeeper
+    ports:
+      - "8080:8080"  # Interface web accessible sur http://localhost:8080
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local  # Nom du cluster Kafka
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092  # Adresse du broker Kafka
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181      # Adresse de Zookeeper
+    networks:
+      - kafka-network
+
+# ============================================
+# VOLUMES - Persistance des données
+# ============================================
+volumes:
+  redis-data:
+    driver: local  # Stockage local des données Redis
+  redisinsight-data:
+    driver: local  # Stockage local des configurations RedisInsight
+
+# ============================================
+# NETWORKS - Isolation réseau
+# ============================================
+networks:
+  redis-network:
+    driver: bridge  # Réseau dédié pour Redis et RedisInsight
+  kafka-network:
+    driver: bridge  # Réseau dédié pour Kafka, Zookeeper et Kafka-UI
