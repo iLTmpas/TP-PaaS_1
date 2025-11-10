@@ -2,6 +2,21 @@ version: '3.8'
 
 services:
   # ============================================
+  # postgres
+  # ============================================
+  db:
+    image: postgres:16               # version PostgreSQL
+    container_name: pg_container
+    restart: always
+    environment:
+      POSTGRES_USER: myuser          # utilisateur
+      POSTGRES_PASSWORD: mypassword  # mot de passe
+      POSTGRES_DB: mydatabase        # base de données initiale
+    ports:
+      - "5432:5432"                  # exposer le port pour accéder depuis l’extérieur
+    volumes:
+      - pgdata:/var/lib/postgresql/data # persistance des données
+  # ============================================
   # REDIS - Cache et base de données en mémoire
   # ============================================
   redis:
@@ -108,6 +123,8 @@ volumes:
     driver: local  # Stockage local des données Redis
   redisinsight-data:
     driver: local  # Stockage local des configurations RedisInsight
+  pgdata:
+    driver: local  # Stockage local des données PGsql
 
 # ============================================
 # NETWORKS - Isolation réseau
