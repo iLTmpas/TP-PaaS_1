@@ -98,6 +98,22 @@ services:
       - kafka-network
 
   # ============================================
+  # KAFKA-INIT - Service pour créer les topics automatiquement
+  # ============================================
+  kafka-init:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka-init
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - kafka-network
+    volumes:
+      - ./kafka-init.sh:/scripts/kafka-init.sh
+    entrypoint: [ "/bin/bash", "/scripts/kafka-init.sh" ]
+    restart: "no"
+
+  # ============================================
   # KAFKA-UI - Interface web pour Kafka
   # ============================================
   kafka-ui:
@@ -107,13 +123,44 @@ services:
       - kafka
       - zookeeper
     ports:
-      - "8080:8080"  # Interface web accessible sur http://localhost:8080
+      - "8580:8080"
     environment:
       KAFKA_CLUSTERS_0_NAME: local  # Nom du cluster Kafka
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092  # Adresse du broker Kafka
       KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181      # Adresse de Zookeeper
     networks:
       - kafka-network
+
+  # ============================================
+  # MOSQUITTO - MQTT Broker pour IoT
+  # ============================================
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    container_name: mqtt-broker
+    restart: unless-stopped
+    ports:
+      - "1883:1883"   # MQTT standard
+      - "9001:9001"   # WebSocket MQTT
+    volumes:
+      - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - mosquitto-data:/mosquitto/data
+      - mosquitto-log:/mosquitto/log
+    networks:
+      - iot-network
+    healthcheck:
+      test: ["CMD-SHELL", "mosquitto_sub -t '$$SYS/#' -C 1 -i healthcheck -W 3 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  mqttx-web:
+    image: emqx/mqttx-web
+    container_name: mqttx-web
+    restart: unless-stopped
+    ports:
+      - "8280:80"
+    networks:
+      - iot-network
 
 # ============================================
 # VOLUMES - Persistance des données
@@ -125,7 +172,10 @@ volumes:
     driver: local  # Stockage local des configurations RedisInsight
   pgdata:
     driver: local  # Stockage local des données PGsql
-
+  mosquitto-data:
+    driver: local
+  mosquitto-log:
+    driver: local
 # ============================================
 # NETWORKS - Isolation réseau
 # ============================================
@@ -134,3 +184,6 @@ networks:
     driver: bridge  # Réseau dédié pour Redis et RedisInsight
   kafka-network:
     driver: bridge  # Réseau dédié pour Kafka, Zookeeper et Kafka-UI
+  iot-network:
+    driver: bridge
+    name: iot-network

@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: core-backend
+
+  # Redis
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: yourStrongPasswordHere
+
+  # Kafka
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+# MQTT
+mqtt:
+  broker-url: tcp://localhost:1883
+  client-id: core-backend
+  topic-scan: iot/entrance/badge/scan
+  topic-command: iot/entrance/lock/command
+
+# Kafka Topics
+kafka:
+  topic-entrance: entrance-logs
+  topic-attempt: attempt-logs
+
+# Port
+server:
+  port: 8081
+
+# Logs
+logging:
+  level:
+    root: INFO
+    com.company.access: DEBUG

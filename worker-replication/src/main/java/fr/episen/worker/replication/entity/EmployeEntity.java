@@ -2,6 +2,9 @@ package fr.episen.worker.replication.entity;
 
 import jakarta.persistence.*;
 
+import java.util.UUID;
+
+
 @Entity
 @Table(name = "employes")
 public class EmployeEntity {
@@ -20,10 +23,12 @@ public class EmployeEntity {
     @Column(name = "mail", nullable = false, length = 100, unique = true)
     private String mail;
 
+    @Column(name = "badge_id", nullable = false)
+    private UUID badgeId;
+
     @Column(name = "valide", nullable = false)
     private Boolean valide = false;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -54,6 +59,14 @@ public class EmployeEntity {
 
     public void setMail(String mail) {
         this.mail = mail;
+    }
+
+    public UUID getBadgeId() {
+        return badgeId;
+    }
+
+    public void setBadgeId(UUID badgeId) {
+        this.badgeId = badgeId;
     }
 
     public Boolean getValide() {
