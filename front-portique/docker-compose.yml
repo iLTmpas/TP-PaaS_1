@@ -3,7 +3,7 @@ services:
   front:
     build: .
     ports:
-      - "8080:80" # accède à l'app via http://localhost:8080
+      - "8081:80" # accède à l'app via http://localhost:8081
     environment:
       - NODE_ENV=production
     restart: unless-stopped
