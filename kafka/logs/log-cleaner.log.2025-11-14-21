@@ -1,0 +1,5 @@
+[2025-11-14 21:23:55,444] INFO Starting the log cleaner (kafka.log.LogCleaner)
+[2025-11-14 21:37:52,130] INFO Shutting down the log cleaner. (kafka.log.LogCleaner)
+[2025-11-14 21:38:06,538] INFO Starting the log cleaner (kafka.log.LogCleaner)
+[2025-11-14 21:50:37,654] INFO Shutting down the log cleaner. (kafka.log.LogCleaner)
+[2025-11-14 21:50:49,930] INFO Starting the log cleaner (kafka.log.LogCleaner)

@@ -1,0 +1,15 @@
+services:
+  spring-app:
+    build:
+      context: .
+    container_name: spring-app
+    restart: on-failure
+    environment:
+      SPRING_PROFILES_ACTIVE: cache-loader
+      SPRING_DATASOURCE_URL: jdbc:postgresql://172.31.252.129:5432/Paas-TP1
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: paaspassword
+      SPRING_REDIS_HOST: 172.31.250.176  
+      SPRING_REDIS_PORT: 6379
+    ports:
+      - "8083:8083"
