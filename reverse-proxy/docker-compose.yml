@@ -5,7 +5,9 @@ services:
     image: nginx:latest
     container_name: reverse-proxy
     volumes:
-      - ./nginx/cockpit-front.conf:/etc/nginx/nginx.conf:ro   # récupère le fichier pour le mettre dans le conteneur en read-only
+      - ./nginx/conf.d/cockpit-front.conf:/etc/nginx/conf.d/cockpit-front.conf:ro   # récupère le fichier pour le mettre dans le conteneur en read-only
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./log/:/var/log/nginx
     ports:
       - "8081:8081"       
-    restart: unless-stopped                                   
+    restart: unless-stopped
