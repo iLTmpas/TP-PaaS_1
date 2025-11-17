@@ -1,0 +1,113 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Table styles */
+.table-wrapper {
+  width: 90%;
+  max-width: 900px;
+  margin-top: 20px;
+}
+
+.students-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  color: #222;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.students-table thead th {
+  background: #61dafb;
+  color: #000;
+  font-weight: 600;
+  padding: 12px 16px;
+  text-align: left;
+}
+
+.students-table tbody td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.students-table tbody tr:hover {
+  background: #f6f8fa;
+}
+
+/* Make header text a bit smaller to fit */
+.App-header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+/* Bouton: neutre et état actif */
+.controls {
+  margin-top: 12px;
+}
+
+.blink-btn {
+  background: #e0e0e0;
+  color: #111;
+  border: 1px solid #cfcfcf;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 200ms ease, transform 120ms ease;
+}
+
+.blink-btn:active {
+  transform: translateY(1px);
+}
+
+.blink-btn--active {
+  background: #4caf50; /* vert */
+  color: white;
+  border-color: #419443;
+}
+
+/* Disabled state: visually indicate non-clickable */
+.blink-btn:disabled,
+.blink-btn[disabled] {
+  opacity: 0.75;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}

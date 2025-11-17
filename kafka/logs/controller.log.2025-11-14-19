@@ -1,0 +1,4 @@
+[2025-11-14 19:02:28,191] INFO [QuorumController id=1] maybeBalancePartitionLeaders: generated 0 records in 11474 microseconds. (org.apache.kafka.controller.QuorumController)
+[2025-11-14 19:02:28,232] INFO [QuorumController id=1] maybeElectUncleanLeaders: generated 0 records in 498 microseconds. (org.apache.kafka.controller.QuorumController)
+[2025-11-14 19:43:08,298] INFO [QuorumController id=1] processBrokerHeartbeat: event unable to start processing because of TimeoutException. (org.apache.kafka.controller.QuorumController)
+[2025-11-14 19:43:08,400] ERROR [QuorumController id=1] processExpiredBrokerHeartbeat: controller event queue overloaded. Timed out heartbeat from broker 1. (org.apache.kafka.controller.ReplicationControlManager)

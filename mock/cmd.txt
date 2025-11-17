@@ -1,0 +1,7 @@
+mosquitto_pub -h 172.31.253.240 -t lock/telemetry -m '{"badgeId":1}'
+mosquitto_pub -h 172.31.253.240 -t lock/telemetry -m '{"badgeId":2}'
+mosquitto_pub -h 172.31.253.240 -t lock/telemetry -m '{"badgeId":3}'
+mosquitto_pub -h 172.31.253.240 -t lock/telemetry -m '{"badgeId":4}'
+mosquitto_pub -h 172.31.253.240 -t lock/telemetry -m '{"badgeId":18}'
+mosquitto_pub -h 172.31.253.240 -t lock/telemetry -m '{"badgeId":19}'
+mosquitto_pub -h 172.31.253.240 -t lock/telemetry -m '{"badgeId":20}'
