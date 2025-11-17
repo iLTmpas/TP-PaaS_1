@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  core-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: worker-replication
+    network_mode: "host"
+    environment:
+      - SPRING_DATA_REDIS_HOST=${REDIS_HOST:-172.31.250.176}
+      - SPRING_DATA_REDIS_PORT=${REDIS_PORT:-6379}
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL:-jdbc:postgresql://172.31.252.129:5432/Paas-TP1}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME:-admin}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD:-paaspassword}
+    restart: unless-stopped

@@ -1,0 +1,81 @@
+package fr.episen.worker.replication.entity;
+
+import jakarta.persistence.*;
+
+import java.util.UUID;
+
+
+@Entity
+@Table(name = "employes")
+public class EmployeEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_employe")
+    private Long idEmploye;
+
+    @Column(name = "nom", nullable = false, length = 50)
+    private String nom;
+
+    @Column(name = "prenom", nullable = false, length = 50)
+    private String prenom;
+
+    @Column(name = "mail", nullable = false, length = 100, unique = true)
+    private String mail;
+
+    @Column(name = "badge_id", nullable = false)
+    private UUID badgeId;
+
+    @Column(name = "valide", nullable = false)
+    private Boolean valide = false;
+
+    private Long id;
+
+    public Long getIdEmploye() {
+        return idEmploye;
+    }
+
+    public void setIdEmploye(Long idEmploye) {
+        this.idEmploye = idEmploye;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public String getPrenom() {
+        return prenom;
+    }
+
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+
+    public UUID getBadgeId() {
+        return badgeId;
+    }
+
+    public void setBadgeId(UUID badgeId) {
+        this.badgeId = badgeId;
+    }
+
+    public Boolean getValide() {
+        return valide;
+    }
+
+    public void setValide(Boolean valide) {
+        this.valide = valide;
+    }
+}
