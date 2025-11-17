@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteRepositoriesConfiguration">
+    <remote-repository>
+      <option name="id" value="artifactory-snapshot-sie" />
+      <option name="name" value="artifactory-snapshot-sie" />
+      <option name="url" value="https://artifact-of.ouest-france.fr:443/artifactory/libs-snapshot-sie" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="central" />
+      <option name="url" value="https://repo.maven.apache.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="artifactory-release-sie" />
+      <option name="name" value="artifactory-release-sie" />
+      <option name="url" value="https://artifact-of.ouest-france.fr:443/artifactory/libs-release-sie" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="nexus" />
+      <option name="name" value="nexus" />
+      <option name="url" value="http://devlinuxsi:8080/nexus/content/repositories/ouestfrance_sie_releases" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="nexus-snapshots" />
+      <option name="name" value="nexus-snapshots" />
+      <option name="url" value="http://devlinuxsi:8080/nexus/content/repositories/ouestfrance_sie_snapshots" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="artifactory-release-of" />
+      <option name="name" value="artifactory-release-of" />
+      <option name="url" value="https://artifact-of.ouest-france.fr:443/artifactory/libs-release" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Maven Central repository" />
+      <option name="url" value="https://repo1.maven.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="vaadin-directory" />
+      <option name="name" value="vaadin-directory" />
+      <option name="url" value="https://maven.vaadin.com/vaadin-addons" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="artifactory-snapshot-of" />
+      <option name="name" value="artifactory-snapshot-of" />
+      <option name="url" value="https://artifact-of.ouest-france.fr:443/artifactory/libs-snapshot" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jboss.community" />
+      <option name="name" value="JBoss Community repository" />
+      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+    </remote-repository>
+  </component>
+</project>
