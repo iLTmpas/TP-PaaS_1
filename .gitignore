@@ -1,3 +1,5 @@
+reverse-proxy/log/
+
 # Maven / Java
 target/
 *.class
