@@ -9,4 +9,5 @@ services:
     ports:
       - "80:80"
       - "1883:1883"
+      - "8086:8086"
     restart: unless-stopped
