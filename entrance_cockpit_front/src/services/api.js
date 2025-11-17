@@ -1,4 +1,4 @@
-const API_URL = "http://172.31.250.252:8086/api/entrance";
+const API_URL = "http://172.31.249.225:8086/api/entrance";
 
 export default {
     authorize: async (badgeId) => {

@@ -4,7 +4,7 @@ function App() {
   const [logs, setLogs] = useState([]);
 
   useEffect(() => {
-    const ws = new WebSocket('ws://172.31.250.252:8086/ws');
+    const ws = new WebSocket('ws://172.31.249.225:8086/ws');
 
     ws.onopen = () => {
       console.log("WebSocket connecté !");
@@ -22,7 +22,7 @@ function App() {
         return;
       }
 
-      setLogs((prev) => [...prev, data]);
+      setLogs((prev) => [data, ...prev]);
     };
 
     return () => ws.close();
@@ -44,40 +44,79 @@ function App() {
       </button>
 
       <div style={{ marginTop: 20 }}>
-        {logs.map((log, index) => {
-          let bgColor = "#fff";
-
-          if (log.type === "attempt_log") {
-            if (typeof log.payload === "string" && /refusé/i.test(log.payload)) {
-              bgColor = "#ffd6d6"; // rouge clair
-            } else {
-              bgColor = "#ececec"; // gris normal
-            }
-          } else if (log.type === "entrance_log") {
-            bgColor = "#d4ffd4"; // vert
+        {/* Affichage par paires (2 colonnes). Le premier log va à gauche, le second à droite, etc. */}
+        {(() => {
+          const rows = [];
+          for (let i = 0; i < logs.length; i += 2) {
+            rows.push([logs[i], logs[i + 1] || null]);
           }
 
-          return (
-            <div key={index} style={{
-              padding: 10,
-              marginBottom: 10,
-              borderRadius: 8,
-              background: bgColor
-            }}>
-              {log.type === "attempt_log" && (
-                <div>
-                  <strong>🕒 Tentative :</strong> {log.payload}
-                </div>
-              )}
+          const extractNumberFromPayload = (payload) => {
+            if (typeof payload !== 'string') return null;
+            // Cherche un nombre après ':' ou '=' (ex: "temp: 23" ou "val=42")
+            const m = payload.match(/[:=]\s*(-?\d+(?:\.\d+)?)/);
+            return m ? m[1] : null;
+          };
 
-              {log.type === "entrance_log" && (
-                <div>
-                  <strong>✅ Accès :</strong> {log.payload}
+          const renderLog = (log, key) => {
+            if (!log) return null;
+
+            let bgColor = "#fff";
+
+            const extracted = extractNumberFromPayload(log.payload);
+            let display = extracted !== null ? extracted : log.payload;
+
+            if (log.type === "attempt_log") {
+              if (typeof log.payload === "string" && /refusé/i.test(log.payload)) {
+                bgColor = "#ffd6d6"; // rouge clair
+                display = log.payload;
+              } else {
+                bgColor = "#ececec"; // gris normal
+                display = "le badge " + display + "tente de rentrer";
+              }
+            } else if (log.type === "entrance_log") {
+              bgColor = "#d4ffd4"; // vert
+            }
+
+
+            return (
+              <div key={key} style={{
+                padding: 10,
+                margin: 5,
+                borderRadius: 8,
+                background: bgColor,
+                boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+              }}>
+                {log.type === "attempt_log" && (
+                  <div>
+                    <strong>🕒 Tentative :</strong> {display}
+                  </div>
+                )}
+
+                {log.type === "entrance_log" && (
+                  <div>
+                    <strong>✅ Accès :</strong> {display}
+                  </div>
+                )}
+              </div>
+            );
+          };
+
+          return (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {rows.map((pair, rIdx) => (
+                <div key={rIdx} style={{ display: 'flex', flexWrap: 'wrap' }}>
+                  <div style={{ flex: '1 1 50%', boxSizing: 'border-box' }}>
+                    {renderLog(pair[1], `l-${rIdx}-0`)}
+                  </div>
+                  <div style={{ flex: '1 1 50%', boxSizing: 'border-box' }}>
+                    {renderLog(pair[0], `l-${rIdx}-1`)}
+                  </div>
                 </div>
-              )}
+              ))}
             </div>
-          )
-        })}
+          );
+        })()}
       </div>
     </div>
   );
