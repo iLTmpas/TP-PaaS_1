@@ -4,7 +4,7 @@ export default function LiveLogs() {
   const [logs, setLogs] = useState([]);
 
   useEffect(() => {
-    const ws = new WebSocket("ws://172.31.250.252:8086/ws");
+    const ws = new WebSocket("ws://172.31.249.225:8086/ws");
 
     ws.onmessage = (event) => {
         const raw = event.data;
