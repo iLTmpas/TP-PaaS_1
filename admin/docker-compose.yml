@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  admin-ihm:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: Admin-IHM
+    ports:
+      - "9191:9191"
+    environment:
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL:-jdbc:postgresql://172.31.252.129:5432/Paas-TP1}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME:-admin}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD:-paaspassword}
+    restart: unless-stopped
