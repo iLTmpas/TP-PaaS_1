@@ -25,12 +25,12 @@ public class CoreOperationalService {
         Employe employe = response.getBody();
 
         if (employe == null || !employe.isValide()) {
-            kafkaProducer.send(new ProducerRecord<>("attempt_logs", "Accès refusé badge=" + badgeId));
+            kafkaProducer.send(new ProducerRecord<>("attempt_logs", "Accès refusé badge : " + badgeId));
             return "ACCESS DENIED";
         }
 
         kafkaProducer.send(new ProducerRecord<>("entrance_logs",
-                "Entrée autorisée pour employé " + employe.getNom()));
+                "Entrée autorisée pour : " + employe.getNom()));
         return "ACCESS GRANTED";
     }
 }
