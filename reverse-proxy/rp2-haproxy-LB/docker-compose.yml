@@ -1,0 +1,12 @@
+services:
+  haproxy:
+    image: haproxy:latest
+    container_name: haproxy
+    volumes:
+      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - ./log/:/var/log/haproxy
+    ports:
+      - "80:80"
+      - "1883:1883"
+      - "8086:8086"
+    restart: unless-stopped
