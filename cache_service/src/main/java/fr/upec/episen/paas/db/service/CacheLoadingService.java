@@ -17,10 +17,15 @@ public class CacheLoadingService {
         this.cacheService = cacheService;
     }
 
-    @Scheduled(fixedRate = 30000) // tous les 30 sec
+    @Scheduled(fixedRate = 30000)
     public void refreshCache() {
         List<Employe> employees = repository.findAll();
-        cacheService.updateCache(employees);
+
+        for (Employe e : employees) {
+            cacheService.putEmploye(e); 
+        }
+
         System.out.println("✅ Cache updated with " + employees.size() + " employees");
     }
 }
+

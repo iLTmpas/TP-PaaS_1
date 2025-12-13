@@ -13,30 +13,18 @@ import java.util.Collection;
 public class CacheController {
 
     private final CacheService cacheService;
-    private final CacheLoadingService cacheLoadingService;
 
-    public CacheController(CacheService cacheService, CacheLoadingService cacheLoadingService) {
+    public CacheController(CacheService cacheService) {
         this.cacheService = cacheService;
-        this.cacheLoadingService = cacheLoadingService;
     }
-
-    @GetMapping
-    public Collection<Employe> getAll() {
-        return cacheService.getAll();
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<Employe> getById(@PathVariable Long id) {
+        System.out.println("Requête reçue pour id=" + id);
         Employe e = cacheService.getEmploye(id);
         if (e == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(e);
     }
-
-    @PostMapping("/refresh")
-    public ResponseEntity<String> refreshCache() {
-        cacheLoadingService.refreshCache();
-        return ResponseEntity.ok("Cache refresh triggered");
-    }
 }
+

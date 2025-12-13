@@ -2,6 +2,8 @@ package fr.upec.episen.paas.db.service;
 
 import fr.upec.episen.paas.db.entity.Employe;
 import fr.upec.episen.paas.db.repository.EmployeRepository;
+
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -9,25 +11,13 @@ import java.util.List;
 @Service
 public class CacheService {
 
-    private final EmployeRepository employeRepository;
-
-    public CacheService(EmployeRepository employeRepository) {
-        this.employeRepository = employeRepository;
-    }
-
-    @Cacheable("employes")
+    @Cacheable(value = "employes", key = "#id")
     public Employe getEmploye(Long id) {
-        return employeRepository.findById(id).orElse(null);
+        return null;  // Redis renverra la valeur si elle existe
     }
 
-    public java.util.Collection<Employe> getAll() {
-        return employeRepository.findAll();
-    }
-
-    public void updateCache(List<Employe> employes) {
-        // update the cache
-        for (Employe employe : employes) {
-            getEmploye(employe.getId());
-        }
+    @CachePut(value = "employes", key = "#employe.id")
+    public Employe putEmploye(Employe employe){
+        return employe; // --> écrit dans Redis
     }
 }
