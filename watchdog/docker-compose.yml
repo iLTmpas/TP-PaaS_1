@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  watchdog:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: watchdog
+    restart: unless-stopped
+    volumes:
+      # Monter le répertoire de logs
+      - /var/log/watchdog:/var/log/watchdog
+      # Monter la configuration
+      - ./config.json:/app/config.json:ro
+      # Optionnel: monter la clé SSH si elle existe
+      - ~/.ssh:/root/.ssh:ro
+    environment:
+      - TZ=UTC
+    # Définir les ressources limites
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    # Garder le conteneur en exécution même s'il crash
+    stdin_open: true
+    tty: true

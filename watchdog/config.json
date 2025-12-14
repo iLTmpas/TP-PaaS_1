@@ -1,0 +1,35 @@
+{
+  "check_interval": 30,
+  "max_consecutive_failures": 2,
+  "recovery_wait_time": 15,
+  "health_check_timeout": 10,
+  "ssh_timeout": 30,
+  "services": [
+    {
+      "name": "core_backend_vm1",
+      "host": "172.31.249.9",
+      "port": 8085,
+      "ssh_host": "172.31.249.9",
+      "ssh_port": 22,
+      "ssh_user": "corebackend1",
+      "ssh_mdp": "corebackend1-mdp",
+      "docker_compose_path": "/home/corebackend1/core_backend",
+      "docker_service_name": "core-backend",
+      "docker_container_name": "core-backend",
+      "use_docker_api_fallback": true
+    },
+    {
+      "name": "core_backend_vm2",
+      "host": "172.31.253.104",
+      "port": 8085,
+      "ssh_host": "172.31.253.104",
+      "ssh_port": 22,
+      "ssh_user": "corebackend2",
+      "ssh_mdp": "corebackend2-mdp",
+      "docker_compose_path": "/home/corebackend2/core_backend",
+      "docker_service_name": "core-backend",
+      "docker_container_name": "core-backend",
+      "use_docker_api_fallback": true
+    }
+  ]
+}
