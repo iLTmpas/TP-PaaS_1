@@ -1,0 +1,21 @@
+# Étape 1 : build (optionnel si tu as déjà le jar)
+# Ici on part du JDK Alpine pour exécuter le jar
+FROM eclipse-temurin:17-jdk-alpine AS build
+
+# Création du répertoire de l'application
+WORKDIR /app
+
+# Copie du jar compilé depuis ton projet
+COPY target/entrance_cockpit-1.0-SNAPSHOT.jar .
+
+# Définir le jar à exécuter
+ENV JAR_FILE=entrance_cockpit-1.0-SNAPSHOT.jar
+
+# Exposer le port utilisé par ton application
+EXPOSE 8086
+
+# Commande pour lancer ton cockpit backend
+CMD ["java", "-jar", "entrance_cockpit-1.0-SNAPSHOT.jar"]
+
+
+
