@@ -1,4 +1,4 @@
-package fr.upec.episen.paas.entrance_cockpit.kafka;
+package fr.upec.episen.paas.entrance_cockpit.consumer;
 
 import fr.upec.episen.paas.entrance_cockpit.service.WsService;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -15,14 +15,16 @@ public class KafkaEventsConsumer {
 
     @KafkaListener(topics = "attempt_logs")
     public void onAttemptLog(String message) {
-        System.out.println("Attempt Log reçu : " + message);
+        // Ne traiter que les accès refusés
+        if (!message.contains("Accès refusé")) {
+            return;
+        }
 
-        // ESCAPE du message pour être sûr que c'est un JSON valide
         String safePayload = message.replace("\"", "\\\"");
-
         String json = "{\"type\":\"attempt_log\", \"payload\":\"" + safePayload + "\"}";
         wsService.broadcast(json);
     }
+
 
     @KafkaListener(topics = "entrance_logs")
     public void onEntranceLog(String message) {

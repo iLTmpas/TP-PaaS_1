@@ -14,7 +14,7 @@ public class TelemetryService {
     private final MqttClient mqttClient;
 
     public TelemetryService() throws Exception {
-        String kafkaServers = System.getenv("KAFKA_BOOTSTRAP_SERVERS"); // ex: "172.31.249.132:9092"
+        String kafkaServers = System.getenv("KAFKA_BOOTSTRAP_SERVERS"); // ex: "172.31.250.252:9092"
         String mqttBrokerUrl = System.getenv("MQTT_BROKER_URL");       
         /* ----------- Kafka Producer (backend → logs) ----------- */
         Properties kafkaProps = new Properties();

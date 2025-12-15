@@ -28,9 +28,16 @@ public class CoreOperationalService {
             kafkaProducer.send(new ProducerRecord<>("attempt_logs", "Accès refusé badge : " + badgeId));
             return "ACCESS DENIED";
         }
-
-        kafkaProducer.send(new ProducerRecord<>("entrance_logs",
-                "Entrée autorisée pour : " + employe.getNom()));
+        kafkaProducer.send(
+            new ProducerRecord<>(
+                "entrance_logs",
+                "Entrée autorisée pour : "
+                    + employe.getNom() + " "
+                    + employe.getPrenom()
+                    + " (badge : " + badgeId + ")"
+            )
+        );
         return "ACCESS GRANTED";
+
     }
 }

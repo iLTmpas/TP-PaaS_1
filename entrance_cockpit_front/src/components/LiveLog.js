@@ -1,71 +1,122 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 export default function LiveLogs() {
   const [logs, setLogs] = useState([]);
+  const logsContainerRef = useRef(null);
 
   useEffect(() => {
     const ws = new WebSocket("ws://172.31.249.225:8086/ws");
 
     ws.onmessage = (event) => {
-        const raw = event.data;
-        const data = JSON.parse(raw);
-      
-        let newLog = null;
+      const data = JSON.parse(event.data);
+      let newLog = null;
 
-        if (data.type === "attempt_log") {
-            const payload = data.payload;
+      const logBase = {
+        id: Date.now() + Math.random(),
+      };
 
-            // Cas 1 : tentative normale → payload = { badgeId: 1 }
-            if (payload.badgeId !== undefined) {
-                newLog = {
-                    text: `🕒 Tentative : badge ${payload.badgeId}`,
-                    color: "#888"
-                };
-            }
+      // ---------- ATTEMPT LOG ----------
+      if (data.type === "attempt_log") {
+        let payload = data.payload;
+        if (typeof payload === "string") {
+          try {
+            payload = JSON.parse(payload);
+          } catch (e) {
 
-            // Cas 2 : accès refusé → payload = "Accès refusé badge=2"
-            else if (typeof payload === "string" && payload.includes("refusé")) {
-                newLog = {
-                    text: `❌ ${payload}`,
-                    color: "red"
-                };
-            }
+          }
         }
 
-        // Cas 3 : accès autorisé
-        else if (data.type === "entrance_log") {
-            newLog = {
-                text: `🟢 ${data.payload}`,
-                color: "green"
-            };
+        if (payload && payload.badgeId !== undefined) {
+          newLog = {
+            ...logBase,
+            text: `🕒 Tentative du numéro de badge ${payload.badgeId}`,
+            color: "#888",
+          };
+        }
+        else if (typeof data.payload === "string" && data.payload.includes("refusé")) {
+          newLog = {
+            ...logBase,
+            text: `❌ ${data.payload}`,
+            color: "red",
+          };
+        }
+      }
+
+      // ---------- ENTRANCE LOG ----------
+      else if (data.type === "entrance_log") {
+        let payload = data.payload;
+
+        if (typeof payload === "string") {
+          try {
+            payload = JSON.parse(payload);
+          } catch (e) {}
         }
 
-        if (newLog) {
-            setLogs(prev => [newLog, ...prev]); // ajouter en haut
-        }
+        const badgeId =
+          payload && payload.badgeId !== undefined ? payload.badgeId : payload;
+
+        newLog = {
+          ...logBase,
+          text: `✅ Accès du numéro de badge ${badgeId}`,
+          color: "green",
+        };
+      }
+
+      if (newLog) {
+        setLogs((prev) => [...prev, newLog]);
+      }
     };
 
     return () => ws.close();
   }, []);
 
+  useEffect(() => {
+    if (logsContainerRef.current) {
+      logsContainerRef.current.scrollTop =
+        logsContainerRef.current.scrollHeight;
+    }
+  }, [logs]);
+
+  const logStyle = (color) => ({
+    padding: 10,
+    marginBottom: 8,
+    borderRadius: 5,
+    background:
+      color === "green"
+        ? "#e6ffe6"
+        : color === "red"
+        ? "#ffe6e6"
+        : "#f5f5f5",
+    borderLeft: `5px solid ${color}`,
+    fontWeight: "600",
+    color: "#333",
+  });
+
   return (
     <div style={{ padding: 15 }}>
-      <h2>📡 Logs en direct</h2>
+      <h2>📡 Logs en direct (Nouveau en Bas)</h2>
 
-      <div style={{ maxHeight: 300, overflowY: "scroll" }}>
-        {logs.map((log, i) => (
-          <div key={i} style={{
-            padding: 8,
-            marginBottom: 5,
-            borderRadius: 5,
-            background: "#fafafa",
-            borderLeft: `4px solid ${log.color}`,
-            fontWeight: "bold"
-          }}>
+      <div
+        ref={logsContainerRef}
+        style={{
+          maxHeight: 300,
+          overflowY: "auto",
+          border: "1px solid #ddd",
+          padding: 5,
+        }}
+      >
+        {logs.map((log) => (
+          <div key={log.id} style={logStyle(log.color)}>
             {log.text}
           </div>
         ))}
       </div>
+
+      {logs.length === 0 && (
+        <p style={{ textAlign: "center", marginTop: 20, color: "#999" }}>
+          En attente des données de la WebSocket...
+        </p>
+      )}
     </div>
   );
 }
