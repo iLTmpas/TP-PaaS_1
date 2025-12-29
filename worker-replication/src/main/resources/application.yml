@@ -1,14 +1,14 @@
 server:
-  port: 9090
+  port: 9091
 
 spring:
   application:
     name: worker replication
 
   datasource:
-    url: jdbc:postgresql://172.31.252.129:5432/Paas-TP1
-    username: admin
-    password: paaspassword
+    url: jdbc:postgresql://104.198.175.147:5432/postgres
+    username: postgres
+    password: bUbis{(2LAv{V;Mf
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 20
@@ -27,3 +27,13 @@ spring:
     redis:
       host: 172.31.250.176
       port: 6379
+
+# Actuator - Health endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
