@@ -1,16 +1,35 @@
 version: '3.8'
 
 services:
-  core-backend:
+  worker-replication:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: worker-replication
     network_mode: "host"
     environment:
+      - SPRING_PROFILES_ACTIVE=docker
       - SPRING_DATA_REDIS_HOST=${REDIS_HOST:-172.31.250.176}
       - SPRING_DATA_REDIS_PORT=${REDIS_PORT:-6379}
-      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL:-jdbc:postgresql://172.31.252.129:5432/Paas-TP1}
-      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME:-admin}
-      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD:-paaspassword}
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL:-jdbc:postgresql://104.198.175.147:5432/postgres}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME:-postgres}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD:-bUbis{(2LAv{V;Mf}
+    labels:
+      logging: "promtail"
+      environment: "production"
     restart: unless-stopped
+
+  # ============================================
+  # PROMTAIL - Collecteur de logs pour Loki
+  # ============================================
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    volumes:
+      - ./promtail-config.yml:/etc/promtail/config.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    command: -config.file=/etc/promtail/config.yml
+    restart: unless-stopped
+    depends_on:
+      - worker-replication
+

@@ -26,4 +26,37 @@ services:
       - KAFKA_TOPIC_ENTRANCE=entrance-logs
       - KAFKA_TOPIC_ATTEMPT=attempt-logs
 
+    labels:
+      logging: "promtail"
+      environment: "production"
+
     restart: unless-stopped
+
+  # ============================================
+  # PROMTAIL - Collecteur de logs pour Loki
+  # ============================================
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    network_mode: "host"
+    volumes:
+      - ./promtail-config.yml:/etc/promtail/config.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    command: -config.file=/etc/promtail/config.yml
+    restart: unless-stopped
+    depends_on:
+      - core-backend
+
+
+  mqttx-web:
+    image: emqx/mqttx-web
+    container_name: mqttx-web
+    restart: unless-stopped
+    ports:
+      - "8280:80"
+
+volumes:
+    mosquitto-data:
+      driver: local
+    mosquitto-log:
+      driver: local
